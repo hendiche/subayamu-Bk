@@ -1,16 +1,30 @@
 var express = require('express');
-var router = express.Router();
+var test = express.Router();
+var routerV1 = express.Router();
 
-var usersRouter = require(`${__src}/users/routeUsers`);
+const middleware = require(`${__helpers}/middleware`);
+
+const UserController = require(`${__src}/users/controllerUsers`);
+
+const usersRouter = require(`${__src}/users/routeUsers`);
 
 
-router.get('/', function(req, res, next) {
+test.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+// public child routes 
+routerV1.post('/login', UserController.login);
+
+// private child routers -> need middlaware auth token
+routerV1.use('/users', middleware.auth, usersRouter);
+
+
+
 const routes = (app) => {
-	app.use('/test', router);
-	app.use('/', usersRouter);
+	app.use('/test', test);
+
+	app.use('/api/v1', routerV1);
 };
 
 module.exports = routes;

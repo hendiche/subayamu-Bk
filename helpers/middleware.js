@@ -10,7 +10,7 @@ middleware.auth = async (req, res, next) => {
 	const header = req.headers['x-access-token'];
 	let token, secret;
 
-	if (header.startsWith('Bearer ')) {
+	if (header && header.startsWith('Bearer ')) {
 		const headers = header.split(' ');
 		secret = headers[0].toLowerCase();
 		token = headers[1];

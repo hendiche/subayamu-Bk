@@ -5,9 +5,7 @@ const middleware = require(`${__helpers}/middleware`);
 const UserController = require('./controllerUsers');
 
 
-router.post('/login', UserController.login);
-
-router.get('/users', middleware.auth, UserController.getAllUsers);
+router.get('/', UserController.getAllUsers);
 router.get('/add', UserController.insertUser); // change this to post
 
 
