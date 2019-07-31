@@ -2,6 +2,8 @@ const User = require('./modelUsers');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const msgHelper = require(`${__helpers}/errorHandler`);
+
 const jwtSecret = process.env.JWT_SECRET_KEY;
 
 const getAllUsers = async (req, res) => {
@@ -20,7 +22,6 @@ const insertUser = async (req, res) => {
 	const newUser = new User({
 		name: 'asd',
 		email: 'asd@mail.com',
-		login_id: 123456,
 		password: 'asd'
 	});
 
@@ -34,23 +35,28 @@ const insertUser = async (req, res) => {
 };
 
 const login = async (req, res, next) => {
-	const { login_id, password } = req.body;
+	const { email, password } = req.body;
 
-	User.findOne({ login_id })
+	User.findOne({ email })
+	.lean()
 	.then(oneUser => {
 		bcrypt.compare(password, oneUser.password)
 		.then(compared => {
-			if (!compared) next(err);
+			if (!compared) return res.status(400).send(msgHelper.errMsg('Email or password not valid'));
 
-			const payload = { id: oneUser._id, login_id: oneUser.login_id };
-			const token = jwt.sign(payload, (jwtSecret+'bearer'), { expiresIn: '30days' });
+			const token = jwt.sign({ id: oneUser._id }, (jwtSecret+'bearer'), { expiresIn: '30days' });
 
-			res.status(200).json({test: token});
+			const resBody = {
+				token: token,
+				user: oneUser,
+			};
+			delete resBody.user.password;
+			res.status(200).json(resBody);
 		});
 	})
 	.catch(err => {
 		console.log(err ,'error');
-		res.status(400).send(err);
+		res.status(400).send(msgHelper.errMsg('Email or password not valid'));
 	})
 }
 

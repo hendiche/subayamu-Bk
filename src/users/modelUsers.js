@@ -13,11 +13,6 @@ const userSchema = new Schema({
 		unique: true,
 		required: true,
 	},
-	login_id: {
-		type: Number,
-		unique: true,
-		required: true,
-	},
 	password: {
 		type: String,
 		required: true,
@@ -74,8 +69,8 @@ userSchema.pre('save', function(next) {
 });
 
 // remove password property after select from database, and before show it into controller
-userSchema.post('findOne', function(doc) {
-	delete doc.password;
-});
+// userSchema.post('findOne', function(doc) {
+// 	if (doc) delete doc.password;
+// });
 
 module.exports = mongoose.model('User', userSchema);
