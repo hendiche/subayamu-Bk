@@ -1,4 +1,4 @@
-const User = require('./modelUsers');
+const User = require('./model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -27,7 +27,7 @@ const insertUser = async (req, res) => {
 
 	newUser.save()
 	.then(created => {
-		res.status(200).send(users);
+		res.status(200).send(created);
 	})
 	.catch(err => {
 		res.status(400).send(err);

@@ -19,30 +19,30 @@ const userSchema = new Schema({
 	},
 	active_organization: {
 		type: Schema.Types.ObjectId,
-		ref: 'Organizations',
+		ref: 'Organization',
 	},
 	active_project: {
 		type: Schema.Types.ObjectId,
-		ref: 'Projects',
+		ref: 'Project',
 	},
 	joined_organizations: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: 'Organizations',
+			ref: 'Organization',
 			default: [],
 		}
 	],
 	owned_projects: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: 'Projects',
+			ref: 'Project',
 			default: [],
 		}
 	],
 	joined_projects: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: 'Projects',
+			ref: 'Project',
 			default: [],
 		}
 	],
