@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const msgHelper = require(`${__helpers}/errorHandler`);
-const User = require(`${__src}/users/modelUsers`);
+const User = require(`${__src}/users/model`);
 
 const jwtSecret = process.env.JWT_SECRET_KEY;
 const middleware = {};
@@ -25,8 +25,8 @@ middleware.auth = async (req, res, next) => {
 		User.findById(decoded.id)
 		.lean()
 		.then(verifyUser => {
-			// $TODO: add user id to request
-			// cannot use '===' mongoose return object id, while decoded string id
+			req.user_id = verifyUser._id;
+			// cannot use '===' mongoose returned id is ObjectId, while decoded id is String
 			if (verifyUser._id == decoded.id) return next();
 
 			// if decoded token user login_id is non in database

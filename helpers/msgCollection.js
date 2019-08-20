@@ -1,31 +1,75 @@
+// HELPER FOR SAME ERROR MESSAGE 
+// required is where object key is not given, there's not value at all
+const required = (fieldName) => {
+	const msg = {
+		type: 'any.required',
+		message: fieldName + ' is required!',
+	};
+
+	return msg;
+}
+
+// empty is where object key is there but no value, the value is ""
+const empty = (fieldName) => {
+	const msg = {
+		type: 'any.empty',
+		message: fieldName + ' is required!!',
+	};
+
+	return msg;
+}
+
+
+
+// ============ USER
 const login = {
 	email: [
-		{
-			type: 'any.required',
-			message: 'Email is required',
-		},
-		{
-			type: 'any.empty',
-			message: 'Email is required',
-		},
+		required('Email'),
+		empty('Email'),
 		{
 			type: 'string.email',
 			message: 'Email format is not valid',
 		},
 	],
 	password: [
+		required('Password'),
+		empty('Password'),
+	],
+};
+
+// ========== ORGANIZATION
+const createOrganization = {
+	name: [
+		required('Name'),
+		empty('Name'),
+	],
+};
+
+// ======== PROJECT
+const addProject = {
+	name: [
+		required('Name'),
+		empty('Name'),
+	],
+	start_period: [
+		required('Start period'),
 		{
-			type: 'any.required',
-			message: 'Password is required',
+			type: 'date.base',
+			message: 'Start period must be a number of milliseconds or valid date string',
 		},
+	],
+	end_period: [
+		required('End period'),
 		{
-			type: 'any.empty',
-			message: 'Password is required',
-		}
+			type: 'date.base',
+			message: 'End period must be a number of milliseconds or valid date string',
+		},
 	],
 };
 
 
 module.exports = {
 	login,
+	createOrganization,
+	addProject,
 };
