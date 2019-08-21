@@ -67,9 +67,17 @@ const addProject = {
 	],
 };
 
+const joinProject = {
+	project_code: [
+		required('Project code'),
+		empty('Project code'),
+	],
+};
+
 
 module.exports = {
 	login,
 	createOrganization,
 	addProject,
+	joinProject,
 };

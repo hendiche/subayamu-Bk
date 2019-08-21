@@ -2,23 +2,19 @@ const express = require('express');
 const router = express.Router();
 
 // project controller
-const {
-	projectsByOrganization,
-	insertProject,
-	youtubeLinksByProject,
-	insertYoutubeLink,
-} = require('./controller');
+// pc equals to projectController
+const pc = require('./controller');
 
 // project validation
-const {
-	addProjectForm,
-} = require('./validation');
+// md equals to middlware
+const md = require('./validation');
 
 
-router.get('/:organization_id', projectsByOrganization);
-router.post('/add/:organization_id', addProjectForm, insertProject);
+router.get('/:organization_id', pc.projectsByOrganization);
+router.post('/add/:organization_id', md.addProject, pc.insertProject);
+router.post('/join/:organization_id', md.joinProject, pc.joinProject);
 
-router.get('/youtube/:project_id', youtubeLinksByProject);
-router.post('/youtube/add', insertYoutubeLink);
+router.get('/youtube/:project_id', pc.youtubeLinksByProject);
+router.post('/youtube/add', pc.insertYoutubeLink);
 
 module.exports = router;
