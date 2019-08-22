@@ -81,24 +81,9 @@ class ProjectController {
 	}
 
 	// YOUTUBE
-	async insertYoutubeLink(req, res) {
-		const newLink = new YoutubeLink({
-			project_id: '5d5bf51ebfa26156543933a6',
-			name: 'don',
-			embeded_url : 'https://youtu.be/JFEU6FHUWsY',
-		});
-
-		newLink.save()
-		.then(created => {
-			res.status(200).send(created);
-		})
-		.catch(err => {
-			res.status(400).send(err);
-		});
-	};
-
 	async youtubeLinksByProject(req, res) {
-		YoutubeLink.find({ project_id: req.params.project_id })
+		const { project_id } = req.params;
+		YoutubeLink.find({ project_id })
 		.lean()
 		.sort('-created_at') //sort by newest created_at
 		.then(links => {
@@ -107,7 +92,42 @@ class ProjectController {
 		.catch(err => {
 			res.status(400).send(err);
 		});
-	};	
+	};
+
+	async insertYoutubeLink(req, res) {
+		const { project_id, name, embeded_url } = req.body;
+
+		const newLink = new YoutubeLink({
+			project_id,
+			name,
+			embeded_url,
+		});
+
+		newLink.save()
+		.then(created => {
+			console.log(created, '=====> ADDED YOUTUBE LINK');
+			res.status(200).send(success('addYoutube'));
+		})
+		.catch(err => {
+			res.status(400).send(err);
+		});
+	};
+
+	async deleteYoutubeLink(req, res) {
+		const { youtube_id } = req.params;
+
+		YoutubeLink.findByIdAndDelete(youtube_id)
+		.then(deleted => {
+			if (deleted === null) return res.status(400).send({ err: 'failed to remove' });
+
+			console.log(deleted, '=====> DELETED YOUTUBE LINK');
+			res.status(200).send(success('deleteYoutube'));
+		})
+		.catch(err => {
+			res.status(400).send(err);
+		});
+	};
+
 }
 
 module.exports = new ProjectController();

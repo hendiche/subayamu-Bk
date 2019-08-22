@@ -8,6 +8,12 @@ const CONST_TYPE_RES = {
 	joinProject: {
 		msg: 'Successfully joined to a project',
 	},
+	addYoutube: {
+		msg: 'Successfully added youtube link to the project',
+	},
+	deleteYoutube: {
+		msg: 'Successfully Deleted youtube link',
+	},
 };
 
 // initial object structure
@@ -18,7 +24,9 @@ const successMessage = {
 const responseHelper = {};
 
 // 
-responseHelper.success = (type = '', extraObj = {}) => {
+responseHelper.success = (type, extraObj = {}) => {
+	if (!type) throw new Error('ResponseHelper.success type parameter is required');
+
 	const result = successMessage;
 
 

@@ -74,10 +74,30 @@ const joinProject = {
 	],
 };
 
+const addYoutube = {
+	name: [
+		required('name'),
+		empty('name'),
+	],
+	embeded_url: [
+		required('Embeded url'),
+		empty('Embeded url'),
+		{
+			type: 'string.uri',
+			message: 'Embeded url must be a valid URL',
+		},
+	],
+	project_id: [
+		required('Project id'),
+		empty('Project id'),
+	],
+};
+
 
 module.exports = {
 	login,
 	createOrganization,
 	addProject,
 	joinProject,
+	addYoutube,
 };

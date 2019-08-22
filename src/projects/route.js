@@ -14,7 +14,8 @@ router.get('/:organization_id', pc.projectsByOrganization);
 router.post('/add/:organization_id', md.addProject, pc.insertProject);
 router.post('/join/:organization_id', md.joinProject, pc.joinProject);
 
-router.get('/youtube/:project_id', pc.youtubeLinksByProject);
-router.post('/youtube/add', pc.insertYoutubeLink);
+router.get('/youtube/:project_id', md.requireProjectId, pc.youtubeLinksByProject);
+router.post('/youtube/add', md.addYoutubeLink, pc.insertYoutubeLink);
+router.delete('/youtube/:youtube_id', md.requireYoutubeId, pc.deleteYoutubeLink);
 
 module.exports = router;

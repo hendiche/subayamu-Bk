@@ -11,6 +11,7 @@ const {
 const {
 	addProject,
 	joinProject,
+	addYoutube,
 } = require(`${__helpers}/msgCollection`);
 
 class ProjectValidation {
@@ -86,20 +87,63 @@ class ProjectValidation {
 		next();
 	};
 
+	async requireProjectId(req, res, next) {
+		const { project_id } = req.params;
+
+		// check if request have param of project_id, if not, response error
+		if (!project_id) {
+			return res.status(400).send({ err: 'project id required' });
+		}
+
+		next();
+	}
+
 	async addYoutubeLink(req, res, next) {
 		const schema = Joi.object().keys({
 			name: Joi.string()
 				.required()
 				.error(errs => {
-					return generateCustomizeErrMsg(errs, {});
+					return generateCustomizeErrMsg(errs, addYoutube.name);
 				}),
 			embeded_url: Joi.string()
 				.required()
+				.uri()
 				.error(errs => {
-					return generateCustomizeErrMsg(errs, {});
+					return generateCustomizeErrMsg(errs, addYoutube.embeded_url);
 				}),
+			project_id: Joi.string()
+				.required()
+				.error(errs => {
+					return generateCustomizeErrMsg(errs, addYoutube.project_id);
+				}),
+		});
 
-		})
+		// check req.body field
+		schema.validate(req.body, { abortEarly: false }, (err, value) => {
+			if (err && err.details) {
+				return res.status(422).send(errMsg('', err.details.map((err) => err.message)));
+			}
+		});
+
+		const { project_id } = req.body;
+
+		const getProject = await Project.findById(project_id).exec();
+
+		// check if project not found, then response error
+		if (!getProject) return res.status(400).send({ err: 'project not found' });
+
+		next();
+	}
+
+	async requireYoutubeId(req, res, next) {
+		const { youtube_id } = req.params;
+
+		// check if request have param of youtube link id, if not, then response error
+		if (!youtube_id) {
+			return res.status(400).send({ err: 'youtube id is required' });
+		}
+
+		next();
 	}
 
 };
