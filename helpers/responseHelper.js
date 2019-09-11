@@ -2,24 +2,40 @@ const _ = require('lodash');
 
 // CONST TYPE OF RESPONSE
 const CONST_TYPE_RES = {
+	register: {
+		msg: 'Successfully created a account',
+	},
 	project: {
 		msg: 'Successfully created a project',
 	},
 	joinProject: {
 		msg: 'Successfully joined to a project',
 	},
+	addDocs: {
+		msg: 'Successfully added document to the project',
+	},
+	deleteDocs: {
+		msg: 'Successfully deleted document',
+	},
+	addSlide: {
+		msg: 'Successfully added slide link to the project',
+	},
+	deleteSlide: {
+		msg: 'Successfully deleted slide',
+	},
 	addYoutube: {
 		msg: 'Successfully added youtube link to the project',
 	},
 	deleteYoutube: {
-		msg: 'Successfully Deleted youtube link',
+		msg: 'Successfully deleted youtube link',
 	},
 };
 
 // initial object structure
 const successMessage = {
 	success: true,
-	msg: ''
+	msg: '',
+	msgArr: [],
 };
 const responseHelper = {};
 

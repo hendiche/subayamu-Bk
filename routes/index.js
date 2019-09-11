@@ -14,6 +14,7 @@ const projectRouter = require(`${__src}/projects/route`);
 
 
 test.get('/', function(req, res, next) {
+	userController.h_updateUserProject('5d35702fe2434e2cd01cbba1', { _id: '5d5ca31a8213ae2ee02c51a3' });
   res.render('index', { title: 'Express' });
 });
 
@@ -23,6 +24,7 @@ routerV1.post('/seederBIT', seeder);
 // ===== /seeder
 // public child routes 
 routerV1.post('/login', userValidation.loginValidation, userController.login);
+routerV1.post('/register', userValidation.registerValidation, userController.insertUser);
 
 // private child routers -> need middleware auth token
 routerV1.use('/users', middleware.auth, usersRouter);

@@ -1,8 +1,16 @@
-const User = require('./model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+// model
+const User = require('./model');
 
+// helpers
 const msgHelper = require(`${__helpers}/errorHandler`);
+const { success } = require(`${__helpers}/responseHelper`);
+
+// controller helper
+const { 
+	h_createdUserJoinOrgz,
+} = require(`${__src}/organizations/controller`);
 
 const jwtSecret = process.env.JWT_SECRET_KEY;
 
@@ -20,15 +28,22 @@ class UserController {
 	};
 
 	async insertUser (req, res) {
+		const { name, email, password } = req.body;
+		
 		const newUser = new User({
-			name: 'asd',
-			email: 'asd@mail.com',
-			password: 'asd'
+			name,
+			email,
+			password,
+			joined_organizations: ['5d5bbc7048eb715668303724'], // temporary static coz only for BIT
+			active_organization: '5d5bbc7048eb715668303724', // temporary static coz only for BIT
 		});
 
 		newUser.save()
 		.then(created => {
-			res.status(200).send(created);
+			return h_createdUserJoinOrgz(created);
+		})
+		.then(updatedOrgz => {
+			res.status(200).send(success('register'));
 		})
 		.catch(err => {
 			res.status(400).send(err);
