@@ -1,5 +1,7 @@
 // model
 const Project = require('./models/project');
+const Documents = require('./models/documents');
+const Slides = require('./models/slides');
 const YoutubeLink = require('./models/youtubeLink');
 
 // helpers
@@ -17,9 +19,11 @@ const {
 class ProjectController {
 	// ===== PROJECT
 	 async projectsByOrganization(req, res) {
+	 	const { user_id } = req; // assigned from middleware.auth as logged/current token user
 	 	const { organization_id } = req.params;
 
 		Project.find({ organization_id })
+		.where('members.user_id').in(user_id)
 		.lean()
 		.then(projects => {
 			res.status(200).send(projects);
@@ -58,7 +62,6 @@ class ProjectController {
 		});
 	};
 
-	// TODO : make middleware checking is same organization or not, already joined user, already assigned to members
 	async joinProject(req, res) {
 		const { user_id } = req; // assigned from middleware.auth as logged/current token user
 		const { organization_id } = req.params;
@@ -80,9 +83,108 @@ class ProjectController {
 		});
 	}
 
+	// DOCUMENTS
+	async docsByProject(req, res) {
+		const { project_id } = req.params;
+
+		Documents.find({ project_id })
+		.lean()
+		.sort('-created_at') // sort by newest created_at
+		.then(docs => {
+			res.status(200).send(docs);
+		})
+		.catch(err => {
+			res.status(400).send(err);
+		});
+	};
+
+	async insertDocument(req, res) {
+		const { project_id, name, body } = req.body;
+
+		const newDocs = new Documents({
+			project_id,
+			name,
+			body,
+		});
+
+		newDocs.save()
+		.then(created => {
+			console.log(created, '=====> ADDED DOCUMENTS');
+			res.status(200).send(success('addDocs'));
+		})
+		.catch(err => {
+			res.status(400).send(err);
+		});
+	};
+
+	async deleteDocument(req, res) {
+		const { document_id } = req.params;
+
+		Documents.findByIdAndDelete(document_id)
+		.then(deleted => {
+			if (deleted === null) return res.status(400).send({ err: 'failed to remove' });
+
+			console.log(deleted, '=====> DELETED DOCUMENTS');
+			res.status(200).send(success('deleteDocs'));
+		})
+		.catch(err => {
+			res.status(400).send(err);
+		})
+	};
+
+	// SLIDES
+	async slideByProject(req, res) {
+		const { project_id } = req.params;
+
+		Slides.find({ project_id })
+		.lean()
+		.sort('-created_at') //sort by newest created_at
+		.then(slides => {
+			res.status(200).send(slides);
+		})
+		.catch(err => {
+			res.status(400).send(err);
+		});
+	};
+
+	async insertSlide(req, res) {
+		const { project_id, name, slide_url } = req.body;
+
+		const newSlide = new Slides({
+			project_id,
+			name,
+			slide_url,
+		});
+
+		newSlide.save()
+		.then(created => {
+			console.log(created, '=====> ADDED SLIDE');
+			res.status(200).send(success('addSlide'));
+		})
+		.catch(err => {
+			res.status(400).send(err);
+		})
+	}
+
+	async deleteSlide(req, res) {
+		const { slide_id } = req.params;
+
+		Slides.findByIdAndDelete(slide_id)
+		.then(deleted => {
+			if (deleted === null) return res.status(400).send({ err: 'failed to remove' });
+
+			console.log(deleted, '=====> DELETED SLIDE');
+			res.status(200).send(success('deleteSlide'));
+		})
+		.catch(err => {
+			res.status(400).send(err);
+		});
+	};
+
 	// YOUTUBE
 	async youtubeLinksByProject(req, res) {
 		const { project_id } = req.params;
+
 		YoutubeLink.find({ project_id })
 		.lean()
 		.sort('-created_at') //sort by newest created_at

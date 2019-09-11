@@ -11,6 +11,8 @@ const {
 const {
 	addProject,
 	joinProject,
+	addDocument,
+	addSlide,
 	addYoutube,
 } = require(`${__helpers}/msgCollection`);
 
@@ -93,6 +95,102 @@ class ProjectValidation {
 		// check if request have param of project_id, if not, response error
 		if (!project_id) {
 			return res.status(400).send({ err: 'project id required' });
+		}
+
+		next();
+	}
+
+	async addDocument(req, res, next) {
+		const schema = Joi.object().keys({
+			name: Joi.string()
+				.required()
+				.error(errs => {
+					return generateCustomizeErrMsg(errs, addDocument.name);
+				}),
+			body: Joi.string()
+				.required()
+				.allow('')
+				.error(errs => {
+					return generateCustomizeErrMsg(errs, addDocument.body);
+				}),
+			project_id: Joi.string()
+				.required()
+				.error(errs => {
+					return generateCustomizeErrMsg(errs, addDocument.project_id);
+				}),
+		});
+
+		// check req.body field
+		schema.validate(req.body, { abortEarly: false }, (err, value) => {
+			if (err && err.details) {
+				return res.status(422).send(errMsg('', err.details.map((err) => err.message)));
+			}
+		});
+
+		const { project_id } = req.body;
+
+		const getProject = await Project.findById(project_id).exec();
+
+		// check if project not found, then response error
+		if (!getProject) return res.status(400).send({ err: 'project not found' });
+
+		next();
+	}
+
+	requireDocumentId(req, res, next) {
+		const { document_id } = req.params;
+
+		// check if request have param of document id, if not, then response error
+		if (!document_id) {
+			return res.status(400).send({ err: 'document id is required' });
+		}
+
+		next();
+	}
+
+	async addSlide(req, res, next) {
+		const schema = Joi.object().keys({
+			name: Joi.string()
+				.required()
+				.error(errs => {
+					return generateCustomizeErrMsg(errs, addSlide.name);
+				}),
+			slide_url: Joi.string()
+				.required()
+				.uri()
+				.error(errs => {
+					return generateCustomizeErrMsg(errs, addSlide.slide_url);
+				}),
+			project_id: Joi.string()
+				.required()
+				.error(errs => {
+					return generateCustomizeErrMsg(errs, addSlide.project_id);
+				}),
+		});
+
+		// check req.body field
+		schema.validate(req.body, { abortEarly: false }, (err, value) => {
+			if (err && err.details) {
+				return res.status(422).send(errMsg('', err.details.map((err) => err.message)));
+			}
+		});
+
+		const { project_id } = req.body;
+
+		const getProject = await Project.findById(project_id).exec();
+
+		// check if project not found, then response error
+		if (!getProject) return res.status(400).send({ err: 'project not found' });
+
+		next();
+	}
+
+	requireSlideId(req, res, next) {
+		const { slide_id } = req.params;
+
+		// check if request have param of slide id, if not, then response error
+		if (!slide_id) {
+			return res.status(400).send({ err: 'slide id is required' });
 		}
 
 		next();

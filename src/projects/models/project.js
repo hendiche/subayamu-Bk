@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const Schema = mongoose.Schema;
 
@@ -11,6 +12,10 @@ const memberSchema = new Schema({
 		type: Number,
 		require: true,
 	},
+	join_date: {
+		type: Date,
+		default: moment(),
+	}
 });
 
 const projectSchema = new Schema({

@@ -37,6 +37,25 @@ const login = {
 	],
 };
 
+const register = {
+	name: [
+		required('Name'),
+		empty('Name'),
+	],
+	email: [
+		required('Email'),
+		empty('Email'),
+		{
+			type: 'string.email',
+			message: 'Email format is not valid',
+		},
+	],
+	password: [
+		required('Password'),
+		empty('Password'),
+	],
+}
+
 // ========== ORGANIZATION
 const createOrganization = {
 	name: [
@@ -74,10 +93,43 @@ const joinProject = {
 	],
 };
 
+const addDocument = {
+	name: [
+		required('Name'),
+		empty('Name'),
+	],
+	body: [
+		required('Body'),
+	],
+	project_id: [
+		required('Project id'),
+		empty('Project id'),
+	],
+};
+
+const addSlide = {
+	name: [
+		required('Name'),
+		empty('Name'),
+	],
+	slide_url: [
+		required('Slide url'),
+		empty('Slide url'),
+		{
+			type: 'string.uri',
+			message: 'Slide url must be a valid URL',
+		},
+	],
+	pproject_id: [
+		required('Project id'),
+		empty('Project id'),
+	],
+};
+
 const addYoutube = {
 	name: [
-		required('name'),
-		empty('name'),
+		required('Name'),
+		empty('Name'),
 	],
 	embeded_url: [
 		required('Embeded url'),
@@ -94,10 +146,14 @@ const addYoutube = {
 };
 
 
+
 module.exports = {
 	login,
+	register,
 	createOrganization,
 	addProject,
 	joinProject,
+	addDocument,
+	addSlide,
 	addYoutube,
 };
