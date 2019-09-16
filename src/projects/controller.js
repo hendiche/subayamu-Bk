@@ -117,6 +117,27 @@ class ProjectController {
 		});
 	};
 
+	// TODO: add validation for these required property
+	async updateDocument(req, res) {
+		const { body } = req.body;
+		const { document_id } = req.params;
+
+		const doc = await Documents.findById(document_id).exec();
+
+		if (!doc) return res.status(400).send({ err: 'Document not found' });
+
+		doc.body = body;
+
+		doc.save()
+		.then(updated => {
+			console.log(updated, '======> UPDATED DOCUMENTS');
+			res.status(200).send(success('putDocs', updated));
+		})
+		.catch(err => {
+			res.status(400).send(err);
+		});
+	};
+
 	async deleteDocument(req, res) {
 		const { document_id } = req.params;
 
@@ -150,10 +171,18 @@ class ProjectController {
 	async insertSlide(req, res) {
 		const { project_id, name, slide_url } = req.body;
 
+		let saveUrl = '';
+		const idxQuerySign = slide_url.lastIndexOf('?');
+		const idxLastPath = slide_url.substring(0, idxQuerySign).lastIndexOf('/');
+		const lastPath = slide_url.substring(idxLastPath + 1, idxQuerySign);
+
+		if (lastPath == 'pub') saveUrl = slide_url.substring(0, idxLastPath + 1) + 'embed';
+		else saveUrl = slide_url
+
 		const newSlide = new Slides({
 			project_id,
 			name,
-			slide_url,
+			slide_url: saveUrl,
 		});
 
 		newSlide.save()

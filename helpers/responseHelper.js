@@ -3,7 +3,7 @@ const _ = require('lodash');
 // CONST TYPE OF RESPONSE
 const CONST_TYPE_RES = {
 	register: {
-		msg: 'Successfully created a account',
+		msg: 'Successfully created an account',
 	},
 	project: {
 		msg: 'Successfully created a project',
@@ -13,6 +13,9 @@ const CONST_TYPE_RES = {
 	},
 	addDocs: {
 		msg: 'Successfully added document to the project',
+	},
+	putDocs: {
+		msg: 'Successfully Updated document',
 	},
 	deleteDocs: {
 		msg: 'Successfully deleted document',
@@ -47,7 +50,12 @@ responseHelper.success = (type, extraObj = {}) => {
 
 
 	if (extraObj && extraObj._id) {
-		result.user = extraObj.toObject(); // required this API, coz mongoose is wrapped from a doc
+		// toObject() , required this API, coz mongoose is wrapped from a doc
+		if (type == 'putDocs') {
+			result.updatedData = extraObj.toObject();
+		} else {
+			result.user = extraObj.toObject();
+		}
 	}
 	
 	result.msg = CONST_TYPE_RES[type].msg;

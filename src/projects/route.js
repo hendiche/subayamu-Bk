@@ -16,6 +16,7 @@ router.post('/join/:organization_id', mw.joinProject, pc.joinProject);
 
 router.get('/docs/:project_id', mw.requireProjectId, pc.docsByProject);
 router.post('/docs/add', mw.addDocument, pc.insertDocument);
+router.put('/docs/:document_id', pc.updateDocument);
 router.delete('/docs/:document_id', mw.requireDocumentId, pc.deleteDocument);
 
 router.get('/slide/:project_id', mw.requireProjectId, pc.slideByProject);
