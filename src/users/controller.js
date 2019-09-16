@@ -29,7 +29,7 @@ class UserController {
 
 	async insertUser (req, res) {
 		const { name, email, password } = req.body;
-		
+
 		const newUser = new User({
 			name,
 			email,
@@ -46,6 +46,10 @@ class UserController {
 			res.status(200).send(success('register'));
 		})
 		.catch(err => {
+			// code 11000 is usually code error from mongoose of duplication data in database
+			if (err.code === 11000) {
+				return res.status(400).send(msgHelper.errMsg('Email already exists'));
+			}
 			res.status(400).send(err);
 		});
 	};
